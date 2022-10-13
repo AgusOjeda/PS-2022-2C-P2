@@ -22,7 +22,6 @@ namespace Infraestructure.Command
             try
             {
                 _context.Add(entity);
-                Console.WriteLine("Inserting entity");
                 await _context.SaveChangesAsync();
             }
             catch (Exception ex)
