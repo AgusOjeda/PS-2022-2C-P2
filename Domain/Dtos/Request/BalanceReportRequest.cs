@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Dtos
+namespace Domain.Dtos.Request
 {
-    public record CarritoDto(Guid CarritoId, int ClienteId, Boolean Estado);
+    public record BalanceReportRequest(string? From, string? To);
 }

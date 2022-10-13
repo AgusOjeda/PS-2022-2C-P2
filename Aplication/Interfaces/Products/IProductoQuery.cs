@@ -1,4 +1,5 @@
 ﻿using Domain.Dtos;
+using Domain.Dtos.Response;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,9 @@ namespace Application.Interfaces.Products
 {
     public interface IProductoQuery
     {
-        ICollection<ProductoDto> GetAll();
-        Task<ProductoDto> GetById(int id);
+        Task<ProductoResponse> GetById(int id);
+        Task<IList<ProductoResponse>> GetProductsByNameSorted(string name, bool order);
+        Task<IList<ProductoResponse>> GetProductsSorted(bool order);
+        Task<bool> FindById(int id);
     }
 }

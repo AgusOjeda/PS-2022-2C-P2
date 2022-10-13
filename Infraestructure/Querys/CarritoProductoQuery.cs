@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces.CarritosProductos;
-using Domain.Mappers;
+using Application.Mappers;
 using Domain.Dtos;
+using Domain.Entities;
 using Infraestructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,21 +16,21 @@ namespace Infraestructure.Querys
         {
             _context = context;
         }
-        // Returns a collection with the entries in the CarritoProducto table
-        // and their contents related to the Product table corresponding to the Id passed as parameter.
-        public ICollection<CarritoWithProductDataDto> GetAllProducts(Guid carritoId)
+
+        public async Task<ICollection<CarritoWithProductDataDto>> GetAllProducts(Guid carritoId)
         {
-            var list = _context.CarritoProducto.Include(cp => cp.ProductoNavigation).Where(x => x.CarritoId == carritoId).Select(x => x.MapCarritoProducto()).ToList();
-            if(list == null)
-            {
-                return null;
-            }
-            else
-            {
-                return list;
-            }
+            var list = await _context.CarritoProducto
+                .Include(cp => cp.ProductoNavigation)
+                .Where(x => x.CarritoId == carritoId)
+                .Select(x => x.MapCarritoProducto())
+                .ToListAsync();
+            return list;
         }
 
-        
+        public async Task<CarritoProducto> GetById(Guid carritoId, int productoId)
+        {
+            var carritoProducto = await _context.CarritoProducto.FindAsync(carritoId, productoId);
+            return carritoProducto;
+        }
     }
 }

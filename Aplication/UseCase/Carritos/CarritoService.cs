@@ -1,13 +1,8 @@
 ﻿using Application.Interfaces;
 using Application.Interfaces.Carritos;
-using Domain.Mappers;
+using Application.Mappers;
 using Domain.Dtos;
 using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.UseCase.Carritos
 {
@@ -15,46 +10,44 @@ namespace Application.UseCase.Carritos
     {
         private readonly ICommandHandler<Carrito> _command;
         private readonly ICarritoQuery _query;
-
         public CarritoService(ICommandHandler<Carrito> command, ICarritoQuery query)
         {
             _command = command;
             _query = query;
         }
-
-        public void ChangeState(CarritoDto cart)
+        public async Task<bool> ChangeState(Guid cartId)
         {
-            var existingCart = _query.GetCartById(cart.CarritoId);
+            var existingCart = await _query.GetCartById(cartId);
             if (existingCart == null)
-                throw new Exception("El carrito no existe");
+            {
+                return false;
+            }
             else
             {
-                existingCart.Estado = cart.Estado;
                 var carUpdated = existingCart.MapCarrito();
-                _command.Update(carUpdated);
+                carUpdated.Estado = false;
+                await _command.Update(carUpdated);
+                return true;
             }
         }
-
-        public CarritoDto CreateCart(int customerId)
+        public async Task<Guid> ActiveCart(int customerId)
         {
-            var oldCart = HasCartActive(customerId);
-            if (oldCart == null)
+            var cart = await HasCartActive(customerId);
+            if (cart == null)
             {
-                var newCart = new Carrito { CarritoId = new Guid(), ClienteId = customerId, Estado = true };
-                _command.Insert(newCart);
-                return newCart.MapCarrito();
+                cart = await CreateCart(customerId);
             }
-            else
-            {
-                oldCart.Nuevo = false;
-                return oldCart;
-            }
+            return cart.CarritoId;
         }
-
-
-        private CarritoDto HasCartActive(int customerId)
+        private async Task<CarritoDto> CreateCart(int customerId)
         {
-            var cart = _query.GetCartActiveByCustomerId(customerId);
+            var newCart = new Carrito { CarritoId = Guid.NewGuid(), ClienteId = customerId, Estado = true };
+            await _command.Insert(newCart);
+            return newCart.MapCarrito();
+        }
+        public async Task<CarritoDto> HasCartActive(int customerId)
+        {
+            var cart = await _query.GetCartActiveByCustomerId(customerId);
             if (cart != null)
                 return cart;
             else

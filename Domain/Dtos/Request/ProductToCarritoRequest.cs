@@ -4,11 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Interfaces
+namespace Domain.Dtos.Request
 {
-    public interface ISalesService
-    {
-        void AddSale();
-        
-    }
+    public record ProductToCarritoRequest(int ClientId, int ProductId, int Amount);
+
 }

@@ -4,9 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Response
+namespace Domain.Dtos.Response
 {
-    public class ProductResponse
-    {
-    }
+    public record CreateClienteResponse(string Message);
 }

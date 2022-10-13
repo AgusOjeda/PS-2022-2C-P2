@@ -1,42 +1,35 @@
-﻿using Application.Interfaces;
-using Application.Interfaces.Products;
-using Application.Response;
-using Domain.Dtos;
-using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Application.Interfaces.Products;
+using Domain.Dtos.Response;
+
 
 namespace Application.UseCase.Products
 {
     public class ProductoService : IProductoService
     {
-        private readonly ICommandHandler<Producto> _command;
         private readonly IProductoQuery _query;
 
-        public ProductoService(ICommandHandler<Producto> command, IProductoQuery query)
+        public ProductoService(IProductoQuery query)
         {
-            _command = command;
             _query = query;
         }
-        
-        public Task<ICollection<ProductoDto>> GetAllProducts()
+        public async Task<IList<ProductoResponse>> GetAllProductsSort(bool sort)
         {
-            var products = _query.GetAll();
-            return Task.FromResult(products);
+            var products = await _query.GetProductsSorted(sort);
+            return products;
         }
-
-        public Task<ICollection<ProductoDto>> GetAllProductsByCarritoId(Guid carritoId)
+        public async Task<ProductoResponse> GetProductById(int productId)
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<ProductoDto> GetProductById(int productId)
-        {
-            var product = _query.GetById(productId);
+            var product = await _query.GetById(productId);
             return product;
+        }
+        public async Task<IList<ProductoResponse>> GetProductsByName(string name, bool sort)
+        {
+            var product = await _query.GetProductsByNameSorted(name, sort);
+            return product;
+        }
+        public async Task<bool> Find(int id)
+        {
+            return await _query.FindById(id);
         }
     }
 }

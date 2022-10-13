@@ -1,14 +1,14 @@
-﻿using Application.Response;
-using Domain.Dtos;
-using Domain.Entities;
-using Domain.Models;
+﻿using Domain.Dtos;
+using Domain.Dtos.Request;
+using Domain.Dtos.Response;
+
 
 
 namespace Application.Interfaces
 {
     public interface IClienteService
     {
-        Task<ClienteDto> CreateCustomer();
-        ClienteDto GetCustomerByDni(string dni);
+        Task<CreateClienteResponse> CreateCustomer(CreateClienteRequest model);
+        Task<bool> FindCustomer(int id);
     }
 }

@@ -9,8 +9,8 @@ namespace Application.Interfaces
 {
     public interface ICommandHandler<T> where T : IEntity
     {
-        void Insert(T entity);
-        void Update(T entity);
-        void Delete(T entity);
+        Task Insert(T entity);
+        Task Update(T entity);
+        Task Delete(T entity);
     }
 }

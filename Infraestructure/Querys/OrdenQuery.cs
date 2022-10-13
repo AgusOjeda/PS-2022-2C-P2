@@ -1,8 +1,9 @@
 ﻿using Application.Interfaces.Ordenes;
 using Domain.Dtos;
-using Domain.Mappers;
+using Application.Mappers;
 using Infraestructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using Domain.Dtos.Response;
 
 namespace Infraestructure.Querys
 {
@@ -14,34 +15,63 @@ namespace Infraestructure.Querys
         {
             _context = context;
         }
-        
-        public ICollection<FullOrdenDto> GetAllData()
+        public async Task<BalancePerDayResponse> GetAllDataByDate(DateTime from, DateTime to)
         {
-            var data = _context.Orden
+
+            var data = await _context.Orden
+                .Where(x => x.Fecha.DayOfYear >= from.DayOfYear && x.Fecha.DayOfYear <= to.DayOfYear)
                 .Include(orden => orden.CarritoNavigation)
-                .Include(orden => orden.CarritoNavigation.ClienteNavigation)
                 .Include(orden => orden.CarritoNavigation.CarritoProductoNavigation)
                 .ThenInclude(x => x.ProductoNavigation)
-                .Select(x => x.MapFullOrden())
+                .Include(orden => orden.CarritoNavigation.ClienteNavigation)
+                .Select(x => x.Map())
                 .AsNoTracking()
-                .ToList();
-            if(data.Any())
-                return data;
-            else
-                return null;
+                .ToListAsync();
+
+            return new BalancePerDayResponse(TotalRevenue: data.Sum(x => x.Total), Sales: data);
         }
-        public ICollection<FullOrdenDto> GetAllDataByProductName(int productId)
+        public async Task<BalancePerDayResponse> GetAllDataByDateUntil(DateTime to)
         {
-            var data = _context.Orden
+
+            var data = await _context.Orden
+                .Where(x => x.Fecha.DayOfYear <= to.DayOfYear)
                 .Include(orden => orden.CarritoNavigation)
-                .Include(orden => orden.CarritoNavigation.CarritoProductoNavigation.Where(x => x.ProductoId == productId))
+                .Include(orden => orden.CarritoNavigation.CarritoProductoNavigation)
                 .ThenInclude(x => x.ProductoNavigation)
                 .Include(orden => orden.CarritoNavigation.ClienteNavigation)
-                .Select(x => x.MapFullOrden())
+                .Select(x => x.Map())
                 .AsNoTracking()
-                .ToList();
+                .ToListAsync();
 
-            return data;
+            return new BalancePerDayResponse(TotalRevenue: data.Sum(x => x.Total), Sales: data);
+        }
+        public async Task<BalancePerDayResponse> GetAllDataByDateSince(DateTime from)
+        {
+
+            var data = await _context.Orden
+                .Where(x => x.Fecha.DayOfYear >= from.DayOfYear)
+                .Include(orden => orden.CarritoNavigation)
+                .Include(orden => orden.CarritoNavigation.CarritoProductoNavigation)
+                .ThenInclude(x => x.ProductoNavigation)
+                .Include(orden => orden.CarritoNavigation.ClienteNavigation)
+                .Select(x => x.Map())
+                .AsNoTracking()
+                .ToListAsync();
+
+            return new BalancePerDayResponse(TotalRevenue: data.Sum(x => x.Total), Sales: data);
+        }
+
+        public async Task<BalancePerDayResponse> GetAllData()
+        {
+            var data = await _context.Orden
+                .Include(orden => orden.CarritoNavigation)
+                .Include(orden => orden.CarritoNavigation.CarritoProductoNavigation)
+                .ThenInclude(x => x.ProductoNavigation)
+                .Include(orden => orden.CarritoNavigation.ClienteNavigation)
+                .Select(x => x.Map())
+                .AsNoTracking()
+                .ToListAsync();
+            return new BalancePerDayResponse(TotalRevenue: data.Sum(x => x.Total), Sales: data);
         }
     }
 }

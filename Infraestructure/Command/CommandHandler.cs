@@ -13,7 +13,7 @@ namespace Infraestructure.Command
         {
             _context = context;
         }
-        public void Insert(T entity)
+        public async Task Insert(T entity)
         {
             if (entity == null)
             {
@@ -22,7 +22,8 @@ namespace Infraestructure.Command
             try
             {
                 _context.Add(entity);
-                _context.SaveChanges();
+                Console.WriteLine("Inserting entity");
+                await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -30,7 +31,7 @@ namespace Infraestructure.Command
             }
         }
 
-        public void Delete(T entity)
+        public async Task Delete(T entity)
         {
             if (entity == null)
             {
@@ -39,7 +40,7 @@ namespace Infraestructure.Command
             try
             {
                 _context.Remove(entity);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {
@@ -48,7 +49,7 @@ namespace Infraestructure.Command
         }
 
 
-        public void Update(T entity)
+        public async Task Update(T entity)
         {
             if (entity == null)
             {
@@ -59,7 +60,7 @@ namespace Infraestructure.Command
                 _context.ChangeTracker.Clear();
                 _context.Entry(entity).State = EntityState.Detached;
                 _context.Update(entity);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             catch (Exception ex)
             {

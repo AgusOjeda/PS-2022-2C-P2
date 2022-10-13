@@ -1,4 +1,5 @@
 ﻿using Domain.Dtos;
+using Domain.Dtos.Response;
 using Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,9 @@ namespace Application.Interfaces.Ordenes
 {
     public interface IOrdenQuery
     {
-        ICollection<FullOrdenDto> GetAllData();
-        ICollection<FullOrdenDto> GetAllDataByProductName(int productId);
+        Task<BalancePerDayResponse> GetAllData();
+        Task<BalancePerDayResponse> GetAllDataByDate(DateTime from, DateTime to);
+        Task<BalancePerDayResponse> GetAllDataByDateSince(DateTime from);
+        Task<BalancePerDayResponse> GetAllDataByDateUntil(DateTime to);
     }
 }

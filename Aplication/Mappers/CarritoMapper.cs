@@ -6,19 +6,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Mappers
+namespace Application.Mappers
 {
     public static class CarritoMapper
     {
         public static CarritoDto MapCarrito(this Carrito source)
         {
             return new CarritoDto
-            {
-                CarritoId = source.CarritoId,
-                ClienteId = source.ClienteId,
-                Estado = source.Estado,
-                Nuevo = true
-            };
+            (
+                CarritoId: source.CarritoId,
+                ClienteId: source.ClienteId,
+                Estado: source.Estado
+            );
         }
         public static Carrito MapCarrito(this CarritoDto source)
         {

@@ -1,8 +1,7 @@
 ﻿using Application.Interfaces.Carritos;
 using Domain.Dtos;
-using Domain.Entities;
 using Infraestructure.Persistence;
-using Domain.Mappers;
+using Application.Mappers;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infraestructure.Querys
@@ -16,17 +15,23 @@ namespace Infraestructure.Querys
             _context = context;
         }
         
-        public CarritoDto GetCartActiveByCustomerId(int customerId)
+        public async Task<CarritoDto> GetCartActiveByCustomerId(int customerId)
         {
-            var entity = _context.Carrito.AsNoTracking().Where(x => x.ClienteId == customerId && x.Estado == true).FirstOrDefault();
+            var entity = await _context.Carrito
+                .AsNoTracking()
+                .Where(x => x.ClienteId == customerId && x.Estado)
+                .FirstOrDefaultAsync();
             if (entity != null) return entity.MapCarrito();
             else return null;
             
         }
 
-        public CarritoDto GetCartById(Guid carritoId)
+        public async Task<CarritoDto> GetCartById(Guid carritoId)
         {
-            var entity = _context.Carrito.AsNoTracking().Where(x => x.CarritoId == carritoId).FirstOrDefault();
+            var entity = await _context.Carrito
+                .AsNoTracking()
+                .Where(x => x.CarritoId == carritoId)
+                .FirstOrDefaultAsync();
             if (entity != null) return entity.MapCarrito();
             else return null;
         }

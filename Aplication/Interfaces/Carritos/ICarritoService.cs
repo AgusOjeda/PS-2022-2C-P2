@@ -10,7 +10,8 @@ namespace Application.Interfaces.Carritos
 {
     public interface ICarritoService
     {
-        CarritoDto CreateCart(int customerId);
-        void ChangeState(CarritoDto cart);
+        Task<bool> ChangeState(Guid cartId);
+        Task<Guid> ActiveCart(int customerId);
+        Task<CarritoDto> HasCartActive(int customerId);
     }
 }

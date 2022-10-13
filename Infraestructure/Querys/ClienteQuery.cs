@@ -1,13 +1,9 @@
 ﻿using Application.Interfaces;
 using Domain.Dtos;
 using Domain.Entities;
-using Domain.Mappers;
+using Application.Mappers;
 using Infraestructure.Persistence;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infraestructure.Querys
 {
@@ -20,11 +16,24 @@ namespace Infraestructure.Querys
             _context = context;
         }
 
-        public ClienteDto GetCustomerByDni(string dni)
+        public async Task<bool> FindByDni(string dni)
         {
-            var customer = _context.Cliente.FirstOrDefault(x => x.DNI == dni);
-            if (customer == null) return null;
-            else return ClienteMapper.MapCliente(customer);
+            var customer = await _context.Cliente.FirstOrDefaultAsync(x => x.DNI == dni);
+            if (customer == null)
+            {
+                return false;
+            }
+            return true;
+        }
+        
+        public async Task<bool> FindById(int id)
+        {
+            var customer = await _context.Cliente.FindAsync(id);
+            if (customer == null)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }
