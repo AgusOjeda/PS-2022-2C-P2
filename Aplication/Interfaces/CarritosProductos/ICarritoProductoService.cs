@@ -9,5 +9,6 @@ namespace Application.Interfaces.CarritosProductos
         Task UpdateProduct(CarritoProducto item);
         Task DeleteProduct(CarritoProducto item);
         Task<ICollection<CarritoWithProductDataDto>> GetAllCarritoProducts(Guid carritoId);
+        Task<bool> ValidateProductOnCart(int productId, Guid carritoId);
     }
 }

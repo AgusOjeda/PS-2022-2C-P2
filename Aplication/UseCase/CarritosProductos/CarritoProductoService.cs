@@ -39,5 +39,10 @@ namespace Application.UseCase.CarritosProductos
             var carritoProducto = await _query.GetAllProducts(carritoId);
             return carritoProducto;
         }
+        public async Task<bool> ValidateProductOnCart(int productId, Guid carritoId)
+        {
+            var list = await _query.GetAllProducts(carritoId);
+            return list.Any(x => x.Producto.Id == productId);
+        }
     }
 }
