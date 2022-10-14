@@ -18,7 +18,11 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration["DefaultConnection"];
+var dbHost = Environment.GetEnvironmentVariable("DB_HOST") ?? "localhost";
+var dbName = Environment.GetEnvironmentVariable("DB_NAME") ?? "agustin_ojedaPS2022";
+var dbPassword = Environment.GetEnvironmentVariable("DB_SA_PASSWORD") ?? "password";
+
+var connectionString = $"Data Source={dbHost};Initial Catalog={dbName};User ID=sa;Password={dbPassword}";
 builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(connectionString));
 // Service
 builder.Services.AddScoped<DbContext, AppDbContext>();

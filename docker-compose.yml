@@ -1,0 +1,32 @@
+version: '3.4'
+
+networks:
+  demoecommerceapp:
+
+services:
+  demo-ecommerce-db:
+    container_name: demo-ecommerce-db
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+      - 8002:1433
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=password@12345#
+    networks:
+      - demoecommerceapp
+  presentation:
+    container_name: demo-ecommerce-api
+    image: ${DOCKER_REGISTRY-}presentation
+    build:
+      context: .
+      dockerfile: Presentation/Dockerfile
+    ports:
+      - 8001:80
+    depends_on:
+     - demo-ecommerce-db
+    environment:
+     - DB_HOST=demo-ecommerce-db
+     - DB_NAME=agustin_ojedaPS2022
+     - DB_SA_PASSWORD=password@12345#
+    networks:
+      - demoecommerceapp
