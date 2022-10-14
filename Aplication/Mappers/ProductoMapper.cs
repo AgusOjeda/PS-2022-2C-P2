@@ -9,6 +9,7 @@ namespace Application.Mappers
         {
             return new ProductoResponse
             (
+                Id: source.ProductoId,
                 Nombre: source.Nombre,
                 Descripcion: source.Descripcion,
                 Marca: source.Marca,

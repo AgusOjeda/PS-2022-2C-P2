@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 namespace Domain.Dtos.Response
 {
     public record ProductoResponse(
+        int Id,
         string Nombre,
         string Descripcion,
         string Marca,

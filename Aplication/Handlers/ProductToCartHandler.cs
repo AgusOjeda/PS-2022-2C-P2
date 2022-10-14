@@ -55,18 +55,21 @@ namespace Application.Handlers
         }
         public async Task<bool> HandleDelete(int clientId, int productId)
         {
-            if(await ValidateCustomer(clientId) && await ValidateProduct(productId))
+            if (await ValidateCustomer(clientId))
             {
                 var cart = await _carritoService.HasCartActive(clientId);
-                if(cart != null)
+                if (cart != null)
                 {
-                    await _cartProductService.DeleteProduct(new CarritoProducto{
-                        CarritoId = cart.CarritoId,
-                        ProductoId = productId
-                    });
-                    return true;
+                    if (await ValidateProductOnCart(productId, cart.CarritoId))
+                    {
+                        await _cartProductService.DeleteProduct(new CarritoProducto
+                        {
+                            CarritoId = cart.CarritoId,
+                            ProductoId = productId
+                        });
+                        return true;
+                    }
                 }
-                return false;
             }
             return false;
         }
@@ -77,6 +80,11 @@ namespace Application.Handlers
         private async Task<bool> ValidateProduct(int productId)
         {
             return await _productService.Find(productId);
+        }
+        private async Task<bool> ValidateProductOnCart(int productId, Guid carritoId)
+        {
+            var list = await _cartProductService.GetAllCarritoProducts(carritoId);
+            return list.Any(x => x.Producto.Id == productId);
         }
     }
 }
