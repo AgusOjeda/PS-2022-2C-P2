@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Domain.Dtos.Response
 {
-    public record CreateClienteResponse(string Message);
+    public record CreateClienteResponse(ClienteDto Client, bool NewUser);
 }

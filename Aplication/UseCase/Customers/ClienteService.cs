@@ -17,12 +17,14 @@ namespace Application.UseCase.Customers
         }
         public async Task<CreateClienteResponse> CreateCustomer(CreateClienteRequest model)
         {
-            if(!await _query.FindByDni(model.DNI))
+            var cliente = await _query.FindByDni(model.DNI);
+            if (cliente == null)
             {
                 await _command.Insert(model.MapNewCliente());
-                return new CreateClienteResponse(Message: "Cliente creado correctamente" );
+                cliente = await _query.FindByDni(model.DNI);
+                return new CreateClienteResponse(cliente, NewUser: true);
             }
-            return new CreateClienteResponse(Message: "El cliente ya existe");
+            return new CreateClienteResponse(cliente, NewUser: false);
         }
         public async Task<bool> FindCustomer(int id)
         {

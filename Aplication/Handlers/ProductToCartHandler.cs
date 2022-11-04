@@ -46,8 +46,7 @@ namespace Application.Handlers
         public async Task<bool> HandleUpdate(ProductToCarritoRequest request)
         {
             if (await _customerService.FindCustomer(request.ClientId) 
-                && await _productService.Find(request.ProductId) 
-                && request.Amount > 0)
+                && await _productService.Find(request.ProductId) )
             {
                 var cart = await _carritoService.ActiveCart(request.ClientId);
                 await _cartProductService.UpdateProduct(new CarritoProducto

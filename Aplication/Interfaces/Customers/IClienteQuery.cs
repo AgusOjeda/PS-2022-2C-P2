@@ -10,7 +10,7 @@ namespace Application.Interfaces
 {
     public interface IClienteQuery
     {
-        Task<bool> FindByDni(string dni);
+        Task<ClienteDto> FindByDni(string dni);
         Task<bool> FindById(int id);
     }
 }

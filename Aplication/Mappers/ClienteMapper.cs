@@ -18,5 +18,17 @@ namespace Application.Mappers
                 Telefono = request.PhoneNumber
             };
         }
+        public static ClienteDto Map(this Cliente request)
+        {
+            return new ClienteDto
+            {
+                ClienteId = request.ClienteId,
+                Nombre = request.Nombre,
+                Apellido = request.Apellido,
+                DNI = request.DNI,
+                Direccion = request.Direccion,
+                Telefono = request.Telefono
+            };
+        }
     }
 }

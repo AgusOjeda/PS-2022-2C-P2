@@ -23,7 +23,12 @@ namespace Presentation.Controllers
             try
             {
                 CreateClienteResponse result = await _clienteService.CreateCustomer(createClienteRequest);
-                return StatusCode(201, result);
+                if(result.NewUser)
+                    return StatusCode(201, result.Client);
+                else
+                {
+                    return StatusCode(409, result.Client);
+                }
             }
             catch (Exception ex)
             {

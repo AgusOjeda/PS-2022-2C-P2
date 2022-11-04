@@ -17,6 +17,8 @@ using Infraestructure.Querys;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+string MiCors = "MiCors";
+string AllowedOriginSetting = "AllowedOrigin";
 
 var connectionString = builder.Configuration["DefaultConnection"];
 builder.Services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(connectionString));
@@ -47,8 +49,21 @@ builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy
+    (
+        name: "corspolicy",
+        build =>
+        {
+            build.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader();
+        }
 
+    );
+});
 var app = builder.Build();
+
+app.UseCors("corspolicy");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

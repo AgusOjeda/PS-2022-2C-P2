@@ -15,15 +15,15 @@ namespace Infraestructure.Querys
         {
             _context = context;
         }
-
-        public async Task<bool> FindByDni(string dni)
+        
+        public async Task<ClienteDto> FindByDni(string dni)
         {
             var customer = await _context.Cliente.FirstOrDefaultAsync(x => x.DNI == dni);
             if (customer == null)
             {
-                return false;
+                return null;
             }
-            return true;
+            return customer.Map();
         }
         
         public async Task<bool> FindById(int id)
