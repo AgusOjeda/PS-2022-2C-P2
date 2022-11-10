@@ -38,6 +38,8 @@ namespace Infraestructure.Command
             }
             try
             {
+                _context.ChangeTracker.Clear();
+                _context.Entry(entity).State = EntityState.Detached;
                 _context.Remove(entity);
                 await _context.SaveChangesAsync();
             }

@@ -18,13 +18,19 @@ namespace Presentation.Controllers
         [HttpPost("{clientId}")]
         public async Task<IActionResult> Post(int clientId)
         {
-            var success = await _handler.GenerateOrder(clientId);
-            if (success)
-                return StatusCode(201, new
+            try
+            {
+                // 	Al generar la orden, no se comprueba que exista el carrito, entonces es posible generar ordenes sin productos
+                var order = await _handler.GenerateOrder(clientId);
+                return StatusCode(201, order);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, new
                 {
-                    Message = "Orden Creada con exito"
+                    Message = "Error al crear la orden"
                 });
-            return StatusCode(400, new { Message = "Error al crear la orden" });
+            }
         }
 
         [HttpGet]

@@ -16,24 +16,18 @@ namespace Application.UseCase.Ordenes
             _command = command;
             _query = query;
         }
-        public async Task<bool> Crear(Guid carritoId, ICollection<CarritoWithProductDataDto> products)
+        public async Task<NewOrdenResponse> Crear(Guid carritoId, ICollection<CarritoWithProductDataDto> products)
         {
-            try
+            decimal total = TotalOrder(products);
+            var newOrden = new Orden
             {
-                decimal total = TotalOrder(products);
-                var newOrden = new Orden
-                {
-                    CarritoId = carritoId,
-                    Fecha = DateTime.Now,
-                    Total = total
-                };
-                await _command.Insert(newOrden);
-                return true;
-            }
-            catch (Exception)
-            {
-                return false;
-            }
+                OrdenId = Guid.NewGuid(),
+                CarritoId = carritoId,
+                Fecha = DateTime.Now,
+                Total = total
+            };
+            await _command.Insert(newOrden);
+            return new NewOrdenResponse(newOrden.OrdenId, newOrden.Fecha, newOrden.Total);
         }
         public async Task<BalancePerDayResponse> BalanceReport()
         {

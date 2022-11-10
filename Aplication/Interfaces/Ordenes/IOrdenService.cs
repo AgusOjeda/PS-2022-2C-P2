@@ -11,7 +11,7 @@ namespace Application.Interfaces.Ordenes
 {
     public interface IOrdenService
     {
-        Task<bool> Crear(Guid carritoId, ICollection<CarritoWithProductDataDto> products);
+        Task<NewOrdenResponse> Crear(Guid carritoId, ICollection<CarritoWithProductDataDto> products);
         decimal TotalOrder(ICollection<CarritoWithProductDataDto> products);
         Task<BalancePerDayResponse> BalanceReport();
         Task<BalancePerDayResponse> BalanceReportFromTo(string from, string to);

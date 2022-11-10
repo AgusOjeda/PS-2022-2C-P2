@@ -20,16 +20,20 @@ namespace Application.Handlers
             _ordenService = ordenService;
         }
         
-        public async Task<bool> GenerateOrder(int clientId)
+        public async Task<ServerResponse<NewOrdenResponse>> GenerateOrder(int clientId)
         {
+            var response = new ServerResponse<NewOrdenResponse>();
             var cartId = await _carritoService.ActiveCart(clientId);
+            if(cartId == null)
+            {
+                response.Errors.Add("No hay carrito activo");
+            }
+                
             var productsList = await _cartProductService.GetAllCarritoProducts(cartId);
             var orden = await _ordenService.Crear(cartId, productsList);
             var cartStatus = await _carritoService.ChangeState(cartId);
-            if (orden && cartStatus)
-                return true;
-            else 
-                return false;  
+            response.Data = orden;
+            return response; 
         }
 
         public async Task<BalancePerDayResponse> GenerateBalanceReport(string from, string to)
